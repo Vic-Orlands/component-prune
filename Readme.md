@@ -140,7 +140,7 @@ Unused components (1):
 
 MIT License © 2025
 
-Developed by [MezieIV](https://github.com/Vic-Orlands)
+Developed by [Chimezie Innocent](https://github.com/Vic-Orlands)
 
 ## Contributing
 
