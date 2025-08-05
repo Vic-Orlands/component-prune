@@ -28,15 +28,25 @@ export async function scanComponents(rootDir, additionalIgnorePatterns = []) {
         ignore,
         absolute: true,
     });
-    return entries
-        .filter((file) => isLikelyComponent(file))
+    const components = entries
+        .filter((file) => {
+        // const isComponent = isLikelyComponent(file);
+        // console.log(`File: ${file}, Is Component: ${isComponent}`);
+        return isLikelyComponent(file);
+    })
         .map((filePath) => ({
         filePath,
         name: path.basename(filePath, path.extname(filePath)),
         extension: path.extname(filePath),
     }));
+    return components;
 }
+// this function uses regex to detect diff naming convention of components
+// --kebab, camel, pascal, snake, etc
+// --all components inside components/ui/ dir is treated as component regardless of naming convention
 function isLikelyComponent(filePath) {
     const filename = path.basename(filePath);
-    return /^[A-Z][A-Za-z0-9]*\.(tsx|jsx|js|ts|svelte|vue|solid\.js)$/.test(filename);
+    const isInUiDir = filePath.includes(path.join("components", "ui"));
+    return (isInUiDir || // Include all files in components/ui
+        /^[A-Za-z][A-Za-z0-9_-]*\.(tsx|jsx|js|ts|svelte|vue|solid\.js)$/.test(filename));
 }

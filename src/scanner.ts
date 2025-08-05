@@ -38,15 +38,24 @@ export async function scanComponents(
     absolute: true,
   });
 
-  return entries
-    .filter((file) => isLikelyComponent(file))
+  const components = entries
+    .filter((file) => {
+      // const isComponent = isLikelyComponent(file);
+      // console.log(`File: ${file}, Is Component: ${isComponent}`);
+      return isLikelyComponent(file);
+    })
     .map((filePath) => ({
       filePath,
       name: path.basename(filePath, path.extname(filePath)),
       extension: path.extname(filePath),
     }));
+
+  return components;
 }
 
+// this function uses regex to detect diff naming convention of components
+// --kebab, camel, pascal, snake, etc
+// --all components inside components/ui/ dir is treated as component regardless of naming convention
 function isLikelyComponent(filePath: string): boolean {
   const filename = path.basename(filePath);
   const isInUiDir = filePath.includes(path.join("components", "ui"));

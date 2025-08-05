@@ -1,6 +1,6 @@
 {
   "name": "component-prune",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Detect and optionally remove unused UI components in modern frontend frameworks(React, Svelte, Solid)",
   "main": "bin/index.js",
   "bin": {
@@ -8,11 +8,15 @@
   },
   "keywords": [
     "cli",
+    "prune",
     "components",
+    "components prune",
+    "components remover",
     "tree-shaking",
     "unused",
-    "prune",
-    "refactor"
+    "refactor",
+    "shadcn",
+    "shadcn remover"
   ],
   "author": "Chimezie Innocent",
   "license": "MIT",

@@ -54,7 +54,7 @@ export async function analyzeUsage(
       .map((c) => c.name);
   } catch {
     // Barrel file doesn't exist, proceed with empty barrelExports
-    console.log(`No barrel file found at: ${barrelFile}`);
+    // console.log(`No barrel file found at: ${barrelFile}`);
     barrelExports = [];
   }
 

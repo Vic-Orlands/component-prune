@@ -1,15 +1,18 @@
 # component-prune
 
-A CLI tool to scan, analyze, and optionally remove unused UI components across modern web frameworks such as React, Vue, Svelte, Solid, and others. Designed for monorepos, design systems, or frontend codebases with stale components, this tool identifies unused components and enables safe cleanup.
+A CLI tool to scan, analyze, and optionally remove unused UI components across modern web frameworks like React, Vue, Svelte, and Solid. Ideal for cleaning up monorepos, design systems, or frontend codebases with stale components.
 
 ## Features
 
-- **Fast static scan** using fast-glob
+- **Fast static scan** using `fast-glob`
 - **Usage analysis** across multiple file types and import styles
-- **Optional auto-deletion** of unused components
+- **Selective component removal** by specifying component names
+- **Auto-deletion** of unused components with `--remove`
 - **JSON report output** for used and unused components
-- **Framework-agnostic**: supports `.tsx`, `.jsx`, `.vue`, `.svelte`, `.js`, and more
-- **Customizable ignore rules** via `.componentpruneignore`
+- **Framework-agnostic**: supports `.tsx`, `.jsx`, `.js`, `.ts`, `.vue`, `.svelte`, `.solid.js`, `.astro`, `.mdx`
+- **Customizable ignore rules** via `.componentignore`
+- **Special handling** for shadcn components in `components/ui`
+- **Flexible naming conventions**: supports PascalCase, camelCase, kebab-case, and snake_case
 
 ## Installation
 
@@ -28,16 +31,22 @@ npx component-prune
 ## Usage
 
 ```bash
-component-prune [path] [options]
+component-prune [path] [components...] [options]
 ```
+
+### Arguments
+
+| Argument        | Description                                                         | Default |
+| --------------- | ------------------------------------------------------------------- | ------- |
+| `path`          | Directory to scan for components                                    | `.`     |
+| `components...` | Specific component names to remove (e.g., `calendar.tsx sheet.tsx`) | None    |
 
 ### Options
 
 | Flag            | Description                                       | Default |
 | --------------- | ------------------------------------------------- | ------- |
-| `path`          | Directory to scan for components                  | `.`     |
 | `--remove`      | Automatically delete unused components            | `false` |
-| `--verbose`     | Show used components in output                    | `false` |
+| `--verbose`     | Show used and unused components in output         | `false` |
 | `--json <path>` | Output results as a JSON report to specified path | `null`  |
 | `-V, --version` | Display version number                            |         |
 | `-h, --help`    | Display help message                              |         |
@@ -46,87 +55,113 @@ component-prune [path] [options]
 
 ### 1. Scan Components
 
-Recursively searches for files following UI component naming conventions (e.g., `PascalCase.tsx`, `Component.vue`).
+Recursively searches for component files in the specified directory, including `components/ui` for shadcn components. Supports:
 
-**Supported file extensions:** `.tsx`, `.ts`, `.jsx`, `.js`, `.vue`, `.svelte`
+- **File extensions**: `.tsx`, `.jsx`, `.js`, `.ts`, `.vue`, `.svelte`, `.solid.js`, `.astro`, `.mdx`
+- **Naming conventions**: PascalCase (`Button.tsx`), camelCase (`myComponent.tsx`), kebab-case (`my-component.tsx`), snake_case (`my_component.tsx`)
 
 ### 2. Analyze Usage
 
-Checks each scanned component to determine if it is imported or referenced within the project.
+Determines if components are imported or referenced (e.g., via JSX or barrel files like `components/ui/index.tsx`).
 
 ### 3. Remove (Optional)
 
-When the `--remove` flag is used, the tool safely deletes unused component files.
+Deletes unused components, either all or specific ones listed in the command, when `--remove` is used.
 
 ## Ignore Rules
 
-By default, ignores common folders: `node_modules`, `.next`, `dist`, `build`, `.vercel`, `.output`.
-
-Customize ignored paths by adding a `.componentpruneignore` file in the project root.
+Ignores common folders: `node_modules`, `.next`, `dist`, `build`, `.vercel`, `.output`. Customize with a `.componentignore` file in the project root.
 
 ## JSON Output
 
-Use the `--json` option to save results in JSON format:
+Use `--json` to save results:
 
 ```json
 {
-  "used": [{ "filePath": "...", "name": "Button", "extension": ".tsx" }],
-  "unused": [{ "filePath": "...", "name": "OldHeader", "extension": ".vue" }]
+  "used": [{ "name": "Button", "filePath": "src/components/ui/button.tsx" }],
+  "unused": [
+    { "name": "Calendar", "filePath": "src/components/ui/calendar.tsx" }
+  ]
 }
+```
+
+## Examples
+
+### List all unused components
+
+```bash
+component-prune src --verbose
+```
+
+Output:
+
+```
+Used components (1):
+  - src/components/ui/button.tsx
+Unused components (2):
+  - src/components/ui/calendar.tsx
+  - src/components/ui/sheet.tsx
+```
+
+### List specific unused components
+
+```bash
+component-prune src calendar.tsx sheet.tsx
+```
+
+Output:
+
+```
+Unused components (2):
+  - src/components/ui/calendar.tsx
+  - src/components/ui/sheet.tsx
+```
+
+### Remove specific unused components
+
+```bash
+component-prune src calendar.tsx sheet.tsx --remove
+```
+
+Output:
+
+```
+Unused components (2):
+  - src/components/ui/calendar.tsx
+  - src/components/ui/sheet.tsx
+🧹 Selected unused components deleted.
+```
+
+### Generate JSON report
+
+```bash
+component-prune src calendar.tsx --json report.json
+```
+
+Output:
+
+```
+Unused components (1):
+  - src/components/ui/calendar.tsx
+📄 JSON report saved to report.json
 ```
 
 ## Programmatic Usage
 
-Import and use component-prune as a Node module:
+Import as a Node module:
 
-- `scanComponents(rootDir, ignorePatterns)`: Scans and returns likely component files
-- `analyzeUsage(components, rootDir)`: Returns `{ used, unused }` arrays
-- `removeUnused(unused: ComponentFile[])`: Deletes specified unused component files
-- `loadIgnorePatterns(rootDir)`: Loads ignore rules from `.componentpruneignore`
-- `writeJSONReport(used, unused, outputPath)`: Writes a JSON summary to file
-
-## Example
-
-```bash
-component-prune src/components --remove --json ./prune-report.json
-```
-
-This command:
-
-- Analyzes the `src/components` directory
-- Deletes unused components
-- Saves results to `prune-report.json`
-
-## Example output:
-
-```bash
-Unused components (1):
-  - src/components/Testing.tsx
-JSON report saved to ./prune-report.json
-Unused components deleted.
-```
-
-### With `--verbose`:
-
-```bash
-component-prune src/components --verbose
-```
-
-### Example Output
-
-```bash
-Used components (1):
-  - src/components/Icons.jsx
-Unused components (1):
-  - src/components/Testing.tsx
-```
+- `scanComponents(rootDir, ignorePatterns)`: Returns component files
+- `analyzeUsage(components, rootDir)`: Returns `{ used, unused }`
+- `removeUnused(unused)`: Deletes specified components
+- `loadIgnorePatterns(rootDir)`: Loads `.componentignore`
+- `writeJSONReport(used, unused, outputPath)`: Writes JSON report
 
 ## License
 
 MIT License © 2025
 
-Developed by [Chimezie Innocent](https://github.com/Vic-Orlands)
+**Developed by Chimezie Innocent**
 
 ## Contributing
 
-Contributions are welcome! Submit pull requests, open issues, or suggest features.
+Contributions welcome! Submit pull requests or open issues (https://github.com/Vic-Orlands/component-prune)[https://github.com/Vic-Orlands/component-prune].

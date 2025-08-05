@@ -9,11 +9,11 @@ export async function loadIgnorePatterns(rootDir: string): Promise<string[]> {
       .split("\n")
       .map((line) => line.trim())
       .filter(Boolean);
-    console.log("Loaded ignore patterns:", patterns);
+    // console.log("Loaded ignore patterns:", patterns);
 
     return patterns;
   } catch {
-    console.log("No .componentignore file found, using default ignores");
+    // console.log("No .componentignore file found, using default ignores");
     return [];
   }
 }
