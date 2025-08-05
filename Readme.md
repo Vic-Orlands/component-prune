@@ -164,4 +164,4 @@ MIT License © 2025
 
 ## Contributing
 
-Contributions welcome! Submit pull requests or open issues (https://github.com/Vic-Orlands/component-prune)[https://github.com/Vic-Orlands/component-prune].
+Contributions welcome! Submit pull requests or open issues [https://github.com/Vic-Orlands/component-prune](https://github.com/Vic-Orlands/component-prune).
