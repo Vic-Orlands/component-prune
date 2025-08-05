@@ -51,7 +51,9 @@ function isLikelyComponent(filePath: string): boolean {
   const filename = path.basename(filePath);
   const isInUiDir = filePath.includes(path.join("components", "ui"));
   return (
-    isInUiDir ||
-    /^[A-Z][A-Za-z0-9]*\.(tsx|jsx|js|ts|svelte|vue|solid\.js)$/.test(filename)
+    isInUiDir || // Include all files in components/ui
+    /^[A-Za-z][A-Za-z0-9_-]*\.(tsx|jsx|js|ts|svelte|vue|solid\.js)$/.test(
+      filename
+    )
   );
 }
