@@ -85,21 +85,6 @@ Import and use component-prune as a Node module:
 - `loadIgnorePatterns(rootDir)`: Loads ignore rules from `.componentpruneignore`
 - `writeJSONReport(used, unused, outputPath)`: Writes a JSON summary to file
 
-## File Structure
-
-```
-component-prune/
-├── bin/
-│   └── index.ts          # CLI entry point
-├── src/
-│   ├── scanner.ts        # Component scanner
-│   ├── usageAnalyzer.ts  # Usage analyzer
-│   ├── remover.ts        # Auto-removal logic
-│   ├── config.ts         # Ignore file loader
-│   └── utils.ts          # Helpers (writeJSONReport, etc)
-│   └── types.ts          # Component type
-```
-
 ## Example
 
 ```bash

@@ -5,11 +5,15 @@ export async function loadIgnorePatterns(rootDir: string): Promise<string[]> {
   const ignorePath = path.join(rootDir, ".componentignore");
   try {
     const content = await fs.readFile(ignorePath, "utf-8");
-    return content
+    const patterns = content
       .split("\n")
       .map((line) => line.trim())
       .filter(Boolean);
+    console.log("Loaded ignore patterns:", patterns);
+
+    return patterns;
   } catch {
-    return []; // No ignore file = no extra ignores
+    console.log("No .componentignore file found, using default ignores");
+    return [];
   }
 }

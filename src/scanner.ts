@@ -49,7 +49,9 @@ export async function scanComponents(
 
 function isLikelyComponent(filePath: string): boolean {
   const filename = path.basename(filePath);
-  return /^[A-Z][A-Za-z0-9]*\.(tsx|jsx|js|ts|svelte|vue|solid\.js)$/.test(
-    filename
+  const isInUiDir = filePath.includes(path.join("components", "ui"));
+  return (
+    isInUiDir ||
+    /^[A-Z][A-Za-z0-9]*\.(tsx|jsx|js|ts|svelte|vue|solid\.js)$/.test(filename)
   );
 }

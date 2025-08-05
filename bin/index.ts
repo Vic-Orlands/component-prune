@@ -13,7 +13,7 @@ const program = new Command();
 program
   .name("component-prune")
   .description("Find and remove unused UI components across frameworks")
-  .version("0.1.0")
+  .version("1.0.0")
   .argument("[path]", "directory to scan for components", ".")
   .option("--remove", "auto delete unused components")
   .option("--verbose", "output used files optionally")
@@ -38,11 +38,6 @@ program
   if (opts.json) {
     await writeJSONReport(used, unused, opts.json);
     console.log(`📄 JSON report saved to ${opts.json}`);
-  }
-
-  if (opts.json) {
-    await writeJSONReport(used, unused, opts.json);
-    console.log(`JSON report saved to ${opts.json}`);
   }
 
   if (opts.remove && unused.length > 0) {
