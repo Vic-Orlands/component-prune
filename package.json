@@ -1,6 +1,6 @@
 {
   "name": "component-prune",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Detect and optionally remove unused UI components in modern frontend frameworks(React, Svelte, Solid)",
   "main": "bin/index.js",
   "bin": {
